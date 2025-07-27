@@ -1,0 +1,200 @@
+<!DOCTYPE html><html>
+<head>
+  <title>Place Order</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    window.onload = function () {
+      emailjs.init("oMy1sqLbZSn4n9DMz");
+    };
+  </script>
+  <style>
+    :root {
+      --bg: #121212;
+      --text: #ffffff;
+      --input-bg: #1e1e1e;
+      --button-bg: #007bff;
+      --button-text: #ffffff;
+    }.light-mode {
+  --bg: #f1f1f1;
+  --text: #000000;
+  --input-bg: #ffffff;
+  --button-bg: #007bff;
+  --button-text: #ffffff;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 40px;
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+  background-color: var(--input-bg);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+input, textarea, select {
+  background-color: var(--bg);
+  color: var(--text);
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  padding: 12px 15px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 12px 25px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#statusMessage {
+  margin-top: 20px;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+#toggleMode {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #555;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+#confirmation {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  color: var(--text);
+  z-index: 999;
+  text-align: center;
+  padding: 20px;
+}
+
+#confirmation h2 {
+  margin-bottom: 10px;
+}
+
+  </style>
+</head>
+<body class="dark-mode">  <form id="orderSelectForm">
+    <select id="orderType" required>
+      <option value="" disabled selected>Select your order</option>
+      <option value="Order 1">Order 1</option>
+      <option value="Order 2">Order 2</option>
+      <option value="Order 3">Order 3</option>
+    </select>
+    <button type="submit">Next</button>
+  </form>  <form id="orderForm" style="display:none;">
+    <input type="text" id="userEmail" placeholder="Your Email" required>
+    <input type="text" id="userPhone" placeholder="Your Phone" required>
+    <textarea id="userAddress" placeholder="Your Address" rows="4" required></textarea>
+    <input type="hidden" id="selectedOrder">
+    <button type="submit">Place Order</button>
+  </form>  <div id="statusMessage"></div>  <div id="confirmation">
+    <h2>✅ Order Placed Successfully!</h2>
+    <p>Thank you for your order. We’ve received your details and will contact you soon.</p>
+  </div><button id="toggleMode">Toggle Light/Dark</button>
+
+  <script>
+    const orderSelectForm = document.getElementById("orderSelectForm");
+    const orderForm = document.getElementById("orderForm");
+    const confirmation = document.getElementById("confirmation");
+    const statusMessage = document.getElementById("statusMessage");
+
+    orderSelectForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const selectedOrder = document.getElementById("orderType").value;
+      document.getElementById("selectedOrder").value = selectedOrder;
+      orderSelectForm.style.display = "none";
+      orderForm.style.display = "block";
+    });
+
+    orderForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("userEmail").value.trim();
+      const phone = document.getElementById("userPhone").value.trim();
+      const address = document.getElementById("userAddress").value.trim();
+      const order = document.getElementById("selectedOrder").value;
+
+      statusMessage.innerHTML = '';
+      statusMessage.className = '';
+
+      if (!email.includes("@") || !email.includes(".")) {
+        statusMessage.innerHTML = "❌ Please enter a valid email address.";
+        statusMessage.className = "error";
+        return;
+      }
+
+      const templateParams = {
+        email: email,
+        phone: phone,
+        address: address,
+        order: order
+      };
+
+      statusMessage.innerHTML = "Sending your order...";
+      statusMessage.className = "success";
+
+      emailjs.send("service_vzepjke", "template_0egvy8i", templateParams)
+        .then(function (response) {
+          statusMessage.style.display = "none";
+          orderForm.style.display = "none";
+          confirmation.style.display = "block";
+        }, function (error) {
+          statusMessage.innerHTML = "❌ Failed to send order. Please try again.";
+          statusMessage.className = "error";
+        });
+    });
+
+    document.getElementById("toggleMode").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+  </script></body>
+  </html>
