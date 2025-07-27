@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Place Order</title>
@@ -32,6 +32,10 @@
       transition: 0.3s;
     }
 
+    h2 {
+      margin-bottom: 20px;
+    }
+
     .card {
       background: var(--card);
       padding: 25px;
@@ -39,7 +43,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       width: 100%;
       max-width: 400px;
-      margin-bottom: 20px;
     }
 
     input, textarea, select {
@@ -126,26 +129,17 @@
 
     #confirmation {
       display: none;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    #confirmation .card {
       text-align: center;
+      padding: 20px;
     }
 
     #confirmation h2 {
       color: #4CAF50;
-      margin-bottom: 10px;
-    }
-
-    #selectTitle {
-      margin-bottom: 20px;
     }
   </style>
 </head>
 <body data-theme="dark">
-  <h2 id="selectTitle">Select Your Order</h2>
+  <h2>Select Your Order</h2>
 
   <div class="card" id="orderSelect">
     <select id="orderType" required>
@@ -189,7 +183,6 @@
     const selectDiv = document.getElementById("orderSelect");
     const modal = document.getElementById("statusModal");
     const confirmation = document.getElementById("confirmation");
-    const selectTitle = document.getElementById("selectTitle");
 
     let selectedOrder = "";
 
@@ -204,7 +197,6 @@
         selectedOrder = val;
         selectDiv.style.display = "none";
         form.style.display = "block";
-        selectTitle.style.display = "none";
       }
     }
 
@@ -251,7 +243,6 @@
     function hideAll() {
       form.style.display = "none";
       selectDiv.style.display = "none";
-      selectTitle.style.display = "none";
       modal.style.display = "none";
     }
   </script>
